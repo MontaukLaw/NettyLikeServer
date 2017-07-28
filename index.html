@@ -1,62 +1,88 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-Netty WebSocket 时间服务器
-</head>
-<br>
-<body>
-<br>
-<script type="text/javascript">
-var socket;
-if (!window.WebSocket) 
-{
-	window.WebSocket = window.MozWebSocket;
-}
-if (window.WebSocket) {
-	//socket = new WebSocket("ws://localhost:8080/websocket");
-	socket = new WebSocket("ws://127.0.0.1:9999/ws");
-	socket.onmessage = function(event) {
-		var ta = document.getElementById('responseText');
-		ta.value="";
-		ta.value = event.data
-	};
-	socket.onopen = function(event) {
-		var ta = document.getElementById('responseText');
-		ta.value = "打开WebSocket服务正常，浏览器支持WebSocket!";
-	};
-	socket.onclose = function(event) {
-		var ta = document.getElementById('responseText');
-		ta.value = "";
-		ta.value = "WebSocket 关闭!"; 
-	};
-}
-else
-	{
-	alert("抱歉，您的浏览器不支持WebSocket协议!");
-	}
 
-function send(message) {
-	if (!window.WebSocket) { return; }
-	if (socket.readyState == WebSocket.OPEN) {
-		socket.send(message);
-	}
-	else
-		{
-		  alert("WebSocket连接没有建立成功!");
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+		<title>LikeServer By Marc LUO</title>
+
+		<!-- Bootstrap -->
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	</head>
+
+	<body>
+
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+		<form onsubmit="return false;">
+
+			<h1>喜欢就赞她吧!</h1>
+			<div class="form-group">
+				<input name="restaurand_id" class="form-control" id="restaurand_id" value="MID:FireFox;CMD:REG">
+				<h1 class="btn btn-success" onclick="send(document.getElementById('restaurand_id').value)"><span class="glyphicon glyphicon-registration-mark" aria-hidden="true"></span>  节点注册</h1>
+
+			</div>
+			<div class="form-group">
+
+				<input name="like_message" class="form-control" id="like_message" value="MID:FireFox;LIK:YES">
+				<h1 class="btn btn-success" onclick="send(document.getElementById('like_message').value)"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span>  赞! </h1>
+
+			</div>
+
+			<h3><textarea class="form-control" id="responseText">Content</textarea></h3>
+
+		</form>
+	</body>
+	<script type="text/javascript">
+		var socket;
+		if(!window.WebSocket) {
+			window.WebSocket = window.MozWebSocket;
 		}
-}
-</script>
-<form onsubmit="return false;">
+		if(window.WebSocket) {
+		
+			socket = new WebSocket("ws://localhost:9999/ws");
+			socket.onmessage = function(event) {
+				var ta = document.getElementById('responseText');
+				ta.value = "";
+				ta.value = event.data;
+				//console.info(event.data);
+			};
+			socket.onopen = function(event) {
+				var ta = document.getElementById('responseText');
+				ta.value = "打开WebSocket服务正常，浏览器支持WebSocket!";
+			};
+			socket.onclose = function(event) {
+				var ta = document.getElementById('responseText');
+				ta.value = "";
+				ta.value = "WebSocket 关闭!";
+			};
+		} else {
+			alert("抱歉，您的浏览器不支持WebSocket协议!");
+		}
 
-<input type="text" name="restaurand_id" value="MID:FireFox;CMD:REG"/>
-<input type="button" value="节点注册" onclick="send(this.form.restaurand_id.value)"/>
-<br><br>
-<input type="text" name="like_message" value="MID:FireFox;LIK:YES"/>
-<input type="button" value="点赞" onclick="send(this.form.like_message.value)"/>
-<hr color="blue"/>
-<h3>服务端返回的应答消息</h3>
-<textarea id="responseText" style="width:500px;height:300px;"></textarea>
-</form>
-</body>
+		function send(message) {
+			if(!window.WebSocket) {
+				return;
+			}
+			if(socket.readyState == WebSocket.OPEN) {
+				socket.send(message);
+			} else {
+				alert("WebSocket连接没有建立成功!");
+			}
+		}
+	</script>
+
 </html>
